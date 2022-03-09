@@ -8,6 +8,9 @@ import javax.jms.MessageProducer;
 import javax.jms.Session;
 import javax.naming.InitialContext;
 
+import modelo.Pedido;
+import modelo.PedidoFactory;
+
 public class TesteProdutorTopico {
 
 	@SuppressWarnings("resource")
@@ -23,9 +26,17 @@ public class TesteProdutorTopico {
 		Destination topico = (Destination) context.lookup("loja");
 
 		MessageProducer producer = session.createProducer(topico);
+		
+		Pedido pedido = new PedidoFactory().geraPedidoComValores();
+		
+//		StringWriter writer = new StringWriter();
+//		JAXB.marshal(pedido, writer);
+//		String xml = writer.toString();
+//		System.out.println(xml);
 
-		Message message = session.createTextMessage("<pedido><id><222></ebook>false</pedido>");
-		message.setBooleanProperty("ebook", true);
+		Message message = session.createObjectMessage(pedido);
+		//Message message = session.createTextMessage("<pedido><id><222></ebook>false</pedido>");
+		//message.setBooleanProperty("ebook", true);
 		producer.send(message);
 
 		session.close(); // fecha conexões
